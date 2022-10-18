@@ -1,4 +1,4 @@
-const apiBaseURL = "http://localhost:5000/api/nouvelles";
+const apiBaseURL = "https://api-server-beta.glitch.me/api/nouvelles";
 
 function HEAD(successCallBack, errorCallBack) {
     $.ajax({
