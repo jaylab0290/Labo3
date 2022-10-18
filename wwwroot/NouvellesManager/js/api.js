@@ -1,4 +1,4 @@
-const apiBaseURL = "http://localhost:5000/api/nouvelles";
+const apiBaseURL = "https://labo-3---mathieu-bussiere-et-jeremy-labelle.glitch.me/NouvellesManager/index.html";
 
 function HEAD(successCallBack, errorCallBack) {
     $.ajax({
