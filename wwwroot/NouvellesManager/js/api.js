@@ -1,4 +1,4 @@
-const apiBaseURL = "https://api-server-beta.glitch.me/api/nouvelles";
+const apiBaseURL = "https://labo-3---mathieu-bussiere-et-jeremy-labelle.glitch.me/api/nouvelles";
 
 function HEAD(successCallBack, errorCallBack) {
     $.ajax({
