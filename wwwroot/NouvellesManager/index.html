@@ -80,7 +80,7 @@
     <script src="js/date.js"></script>
     <script src="js/api.js"></script>
     <script defer>
-        const periodicRefreshPeriod = 10;
+        const periodicRefreshPeriod = 1;//todo remettre a 10 secondes
         let holdCheckETag = false;
         let currentETag = "";
         let createMode = true;
@@ -90,8 +90,7 @@
         let nouvelleIdToDelete = 0; // used by confirmDeleteDlg
         let selectedCategory = "";
         let previousScrollPosition = 0;
-        let offset = 0;
-        let limit = 3;
+        let nouvellesCount = 5;
 
         //Refreshes the page in an interval of time.
         init_UI();
@@ -105,21 +104,23 @@
             }
         }
 
-        function getNouvellesList() {
+        let append = false;
+
+        function getNouvellesList(refresh = true) {
             function prepareQueryString() {
-            console.log(offset);
-            let stringGetSome = `&offset=${offset}&limit=${limit}`
-            let queryString = "?sort=Date,desc" + stringGetSome;
-            if (!hideSearchBar) {
-                selectedCategory = $("#searchCategory").val();
-                let searchTitle = $("#searchTitle").val();
-                if (selectedCategory != "")
-                    queryString += "&Category=" + selectedCategory;
-                if (searchTitle != "")
-                    queryString += "&Title=*" + searchTitle + "*";
+                let stringGetSome = refresh ? `&offset=${0}&limit=${nouvellesCount}` : `&offset=${nouvellesCount++}&limit=${1}`
+                let queryString = "?sort=Date,desc" + stringGetSome;
+                if (!hideSearchBar) {
+                    selectedCategory = $("#searchCategory").val();
+                    let searchTitle = $("#searchTitle").val();
+                    if (selectedCategory != "")
+                        queryString += "&Category=" + selectedCategory;
+                    if (searchTitle != "")
+                        queryString += "&Title=*" + searchTitle + "*";
+                }
+                return queryString;
             }
-            return queryString;
-        }
+            append = !refresh;
             GET_SOME(refreshNouvellesList, error, prepareQueryString());
             GET_SOME(refreshCategoryList, error, "?fields=Category");
         }
@@ -159,10 +160,12 @@
             }
             currentETag = ETag;
             previousScrollPosition = $(".scrollContainer").scrollTop();
-            //$("#nouvellesList").empty();
+            if (!append) $("#nouvellesList").empty();
             let currentCategory = "";
-            for (let nouvelle of nouvelles) {
-                insertIntoNouvelleList(nouvelle);
+            if (nouvelles) {
+                for (let nouvelle of nouvelles) {
+                    insertIntoNouvelleList(nouvelle);
+                }
             }
             $(".editCmd").click(e => { editNouvelle(e) });
             $(".deleteCmd").click(e => { deleteNouvelle(e) });
@@ -357,9 +360,7 @@
 
         $(".scrollContainer").scroll(function () {
             if (($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() >= $("#nouvellesList").height())) {
-                console.log("ALLO!");
-                offset += 1;
-                getNouvellesList();
+                getNouvellesList(false);
             }
         });
     </script>
